@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is GraalVM worth?</title>
+    <style></style>
+    <link rel="stylesheet" href="main.css">
+    <link id="theme-link" rel="stylesheet" href="lighCode.css">
+    <link id="theme-button" rel="stylesheet" href="darkModeButton.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="view-counter">
+            <i class="fas fa-eye"></i> <span id="viewCount">253 views</span>
+        </div>
+        <div class="darkMode">
+            <input type="checkbox" class="checkbox" id="checkbox">
+            <label for="checkbox" class="checkbox-label">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+                <span class="ball"></span>
+            </label>
+        </div>
+        <h1>What is GraalVM worth?</h1>
+        <div class="toc-container">
+            <div class="toc-title">Summary</div>
+            <ul class="toc-list">
+                <li><a href="#section1">Introduction</a></li>
+                <li><a href="#section2">Chapitre 1: Les bases</a></li>
+                <li><a href="#section3">Chapitre 2: Concepts avancés</a></li>
+                <li><a href="#myChart">Chapitre 3: Études de cas</a></li>
+                <li><a href="#section5">Conclusion</a></li>
+                <li><a href="#section6">Références</a></li>
+            </ul>
+        </div>
+        <h2>Sous-titre</h2>
+        <p>Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.Voici un paragraphe d'introduction. Lorem ipsum dolor sit amet, consectetur
+            adipiscing elit. Vivamus lacinia
+            odio vitae vestibulum vestibulum.</p>
+        <h2>Deuxième sous-titre</h2>
+        <details>
+            <summary>See the hashing algorithm</summary>
+            <pre><code class="language-JavaScript">
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+public class Hash
+{
+    public static void main(String[] args)
+    {
+        long startTime = System.currentTimeMillis();
+        
+        double result = 0;
+        for (int i = 0; i < 1_000_000; i++) {
+            //result += Math.sqrt(i) * Math.sin(i) * Math.log(i + 1);
+            hash(String.valueOf(result += Math.sqrt(i) * Math.sin(i) * Math.log(i + 1)));
+            
+        }
+        
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Temps de réponse : " + elapsedTime + " ms");
+        
+        
+    }
+    
+    public static byte[] hash(String password) {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+            md.update(generatePrefix());
+            byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return hashedPassword;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public static byte[] generatePrefix() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return salt;
+    }
+}
+            </code></pre>
+        </details>
+        <div class="chart-container">
+            <h2>Results</h2>
+            <canvas id="myChart" style="max-width: 400; max-height: 400px;"></canvas>
+        </div>
+    </div>
+
+    <script src="codeColor.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="darkModeButton.js"></script>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['haching', 'Sprint boot start'],
+                datasets: [{
+                    label: 'GraalVM',
+                    data: [8356, 121],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'JVM',
+                    data: [3520, 3668],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 8500,
+                        title: {
+                            display: true,
+                            text: 'execution time in ms'
+                        }
+                    }
+
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
