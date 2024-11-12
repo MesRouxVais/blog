@@ -4,7 +4,7 @@
 
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: "Montserrat", sans-serif;
     background: linear-gradient(-45deg, rgb(66, 3, 66), black, rgb(61, 3, 61));
     display: flex;
     flex-direction: column;
@@ -36,7 +36,7 @@ h1 {
     color: #333;
 }
 
-h2 {
+h2,h3{
     color: #555;
 }
 
@@ -101,6 +101,15 @@ summary:hover {
 }
 
 
+li {
+    color: #666;
+    line-height: 1.6;
+    padding-top: 20px;
+}
+.dark-mode li{
+    color: white;
+}
+
 
 
 /*sommmmmmmmmmmmairreeeeeeee*/
@@ -120,6 +129,7 @@ summary:hover {
 }
 .toc-list li {
     margin: 5px 0;
+    padding-top: 0px;
 }
 .toc-list li a {
     text-decoration: none;
@@ -131,4 +141,46 @@ summary:hover {
 }
 .dark-mode .toc-container{
     background-color: #333;
+}
+
+
+/*table*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1em;
+    font-family: Arial, sans-serif;
+    text-align: left;
+}
+th, td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+th {
+    background-color: #f4f4f4;
+}
+.dark-mode th{
+    background-color: #575757;
+}
+.checkmark {
+    color: green;
+    font-weight: bold;
+}
+.crossmark {
+    color: red;
+    font-weight: bold;
+}
+
+
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+        width: 100%;
+        max-width: none;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        border-radius: 0px;
+    }
 }

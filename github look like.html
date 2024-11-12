@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mesrouxvais</title>
+    <link id="theme-link" rel="stylesheet" href="lighCode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link id="theme-button" rel="stylesheet" href="darkModeButton right.css">
+    <style>
+
+        .dark-mode {
+            background: linear-gradient(-45deg, rgb(0, 0, 0), rgb(51, 10, 29), rgb(0, 0, 0));
+            color: white;
+        }
+
+        .dark-mode .content-wrapper {
+            background: #333;
+            color: white;
+        }
+
+        .dark-mode h1,
+        .dark-mode h2,
+        .dark-mode p {
+            color: white;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            max-width: 100%;
+            margin: 0;
+            background: linear-gradient(-45deg, rgb(0, 0, 0), rgb(51, 10, 29), rgb(0, 0, 0));
+            padding: 40px;
+
+            height: 100%;
+            min-height: 100vh;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .content-wrapper {
+            display: flex;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            position: relative;
+        }
+        .content {
+            width: 75%;
+            padding: 20px;
+        }
+        .sidebar {
+            position: relative;
+            width: 25%;
+            padding: 20px;
+            border-left: 1px solid #ccc;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom-right-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .dark-mode .sidebar{
+            background: rgba(20, 20, 20, 0.8);
+        }
+        .skill-icon {
+            margin-right: 10px;
+        }
+        pre {
+            background: #f3f3f3;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background: #f3f3f3;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .article {
+            margin-bottom: 15px;
+        }
+        .article h3 {
+            margin: 5px 0;
+        }
+        .article p {
+            margin: 0;
+            color: #555;
+        }
+        .tag { 
+            display: inline-flex;
+            align-items: center;
+            background-color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-right: 5px; 
+            margin-bottom: 5px;
+        }
+        .tag p{
+            color: #fff;
+        }
+        .tag span{
+            content: ' '; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px;
+        }
+        .navbar {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .content, .sidebar {
+                width: 100%;
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.9);
+            }
+            .sidebar {
+                border-left: none;
+                border-top: 1px solid #ccc;
+            }
+            .navbar {
+                display: flex;
+                justify-content: space-around;
+                width: 100%;
+                background: #333;
+                color: #fff;
+                padding: 10px;
+            }
+            .navbar a {
+                color: #fff;
+                text-decoration: none;
+                padding: 10px;
+            }
+            .navbar a.active {
+                background: #575757;
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" class="tab-link active" data-tab="presentation">Présentation</a>
+        <a href="#" class="tab-link" data-tab="articles">Articles</a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content tab-content active" id="presentation">
+            <h1>MesRouxVais</h1>
+            <p>Description of your project goes here.</p>
+
+            <h2>Skills & Tools</h2>
+            <p>
+                <img src="https://skillicons.dev/icons?i=blender" alt="Blender" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=java" alt="Java" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=docker" alt="Docker" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=kotlin" alt="Kotlin" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=spring" alt="Spring" class="skill-icon">
+            </p>
+
+            <h2>Installation</h2>
+            <pre><code class="language-JavaScript">
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+public class Hash
+{
+    public static void main(String[] args)
+    {
+        long startTime = System.currentTimeMillis();
+        
+        double result = 0;
+        for (int i = 0; i < 1_000_000; i++) {
+            //result += Math.sqrt(i) * Math.sin(i) * Math.log(i + 1);
+            hash(String.valueOf(result += Math.sqrt(i) * Math.sin(i) * Math.log(i + 1)));
+            
+        }
+        
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Temps de réponse : " + elapsedTime + " ms");
+        
+        
+    }
+    
+    public static byte[] hash(String password) {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-512");
+            md.update(generatePrefix());
+            byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            return hashedPassword;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    public static byte[] generatePrefix() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return salt;
+    }
+}
+            </code></pre>
+
+            <h2>Usage</h2>
+            <p>Instructions on how to use your project.</p>
+
+            <h2>Contributing</h2>
+            <p>Guidelines for contributing to the project.</p>
+
+            <h2>License</h2>
+            <p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+        </div>
+
+        <div class="sidebar tab-content" id="articles">
+            <h3>Pinned articles</h3>
+            <div class="darkMode">
+                <input type="checkbox" class="checkbox" id="checkbox">
+                <label for="checkbox" class="checkbox-label">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                    <span class="ball"></span>
+                </label>
+            </div>
+            <div class="article">
+                <h3><em>Article 1</em></h3>
+                <div class="tag"><span style="background-color: rgb(252, 133, 133);"></span><p>Tech</p></div>
+                <p>Description of article 1.</p>
+            </div>
+            <h3>Pinned projects</h3>
+        </div>
+    </div>
+
+
+    <script src="codeColor.js"></script>
+    <script src="darkModeButton.js"></script>
+    <script>
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.tab-link').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
