@@ -1,59 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-5SFSWWX7');</script>
+        <!-- End Google Tag Manager -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What is GraalVM worth?</title>
-    <style></style>
+    <title>mesrouxvais</title>
     <link id="theme-link" rel="stylesheet" href="lighCode.css">
-    <link id="theme-button" rel="stylesheet" href="darkModeButton.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link rel="stylesheet" href="main.css">
-</head>
+    <link id="theme-button" rel="stylesheet" href="darkModeButton right.css">
+    <style>
 
+        .dark-mode {
+            background: linear-gradient(-45deg, rgb(0, 0, 0), rgb(51, 10, 29), rgb(0, 0, 0));
+            color: white;
+        }
+
+        .dark-mode .content-wrapper {
+            background: #333;
+            color: white;
+        }
+
+        .dark-mode h1,
+        .dark-mode h2,
+        .dark-mode p {
+            color: white;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            max-width: 100%;
+            margin: 0;
+            background: linear-gradient(-45deg, rgb(0, 0, 0), rgb(51, 10, 29), rgb(0, 0, 0));
+            padding: 40px;
+
+            height: 100%;
+            min-height: 100vh;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .content-wrapper {
+            display: flex;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            position: relative;
+        }
+        .content {
+            width: 75%;
+            padding: 20px;
+            position: relative;
+        }
+        .sidebar {
+            position: relative;
+            width: 25%;
+            padding: 20px;
+            border-left: 1px solid #ccc;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom-right-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .dark-mode .sidebar{
+            background: rgba(20, 20, 20, 0.8);
+        }
+        .skill-icon {
+            margin-right: 10px;
+        }
+        pre {
+            background: #f3f3f3;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background: #f3f3f3;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .article {
+            margin-bottom: 15px;
+        }
+        .article h3 {
+            margin: 5px 0;
+        }
+        .article p {
+            margin: 0;
+            color: #555;
+        }
+        .tag { 
+            display: inline-flex;
+            align-items: center;
+            background-color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-right: 5px; 
+            margin-bottom: 5px;
+        }
+        .tag p{
+            color: #fff;
+        }
+        .tag span{
+            content: ' '; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px;
+        }
+        .navbar {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        .picture{
+            width: 150px; height: 150px;
+            border-radius: 100%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+            display: none;
+            
+        }
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .content, .sidebar {
+                width: 100%;
+                padding: 10px;
+                background: rgba(255, 255, 255, 0.9);
+            }
+            .sidebar {
+                border-left: none;
+                border-top: 1px solid #ccc;
+            }
+            .navbar {
+                display: flex;
+                justify-content: space-around;
+                width: 100%;
+                background: #333;
+                color: #fff;
+                padding: 10px;
+            }
+            .navbar a {
+                color: #fff;
+                text-decoration: none;
+                padding: 10px;
+            }
+            .navbar a.active {
+                background: #575757;
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
 <body>
-    <div class="container">
-        <div class="view-counter">
-            <span id="viewCount">
-                <span id="autor">mesrouxvais |</span>
-                <span id="date">24/06/2025 |</span>
-                <span id="views">256 </span><i class="fas fa-eye"></i>
-            </span>
-        </div>
-        <div class="darkMode">
-            <input type="checkbox" class="checkbox" id="checkbox">
-            <label for="checkbox" class="checkbox-label">
-                <i class="fas fa-moon"></i>
-                <i class="fas fa-sun"></i>
-                <span class="ball"></span>
-            </label>
-        </div>
-        <h1>What is GraalVM worth?</h1>
-        <div class="toc-container">
-            <div class="toc-title">Summary</div>
-            <ul class="toc-list">
-                <li><a href="#What-is-GraalVM">What is GraalVM ?</a></li>
-                <li><a href="#GraalVM-vs-JVM">GraalVM vs JVM</a></li>
-                <li><a href="#Use-case">Use case</a></li>
-                <li><a href="#bad-points" style="font-size: 0.85em; margin-left: 30px;">bad points</a></li>
-            </ul>
-        </div>
-        <h2 id="What-is-GraalVM">What is GraalVM</h2>
-        <p>When executing a .jar or .class file with the JVM (Java Virtual Machine), as is typically done to run a Java
-            program, we provide the JVM with bytecode instructions. These can be seen as pre-compiled instructions that
-            the JVM processes and transforms into native code. This is what makes Java portable. However, because this
-            process adds an additional step, it can result in longer execution times. <br>GraalVM allows us to convert
-            our
-            Java code into a native executable, avoiding this extra step. This can save valuable execution time and
-            reduce the impact of our program on the machine's resources. However, a native executable produced by
-            GraalVM is not always beneficial, even in terms of performance.<br><br>
-            We are going to explore the usefulness of GraalVM through the following examples:
-        </p>
-        <canvas id="myChart" style="max-width: 400; max-height: 400px;"></canvas>
-        <details>
-            <summary>See the hashing algorithm</summary>
-            <pre><code class="language-Java">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5SFSWWX7"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    <div class="navbar">
+        <a href="#" class="tab-link active" data-tab="presentation">Présentation</a>
+        <a href="#" class="tab-link" data-tab="articles">Articles</a>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="content tab-content active" id="presentation">
+            <h1>MesRouxVais</h1>
+            <p>Description of your project goes here.</p>
+            <img class="picture">
+            <h2>Skills & Tools</h2>
+            <p>
+                <img src="https://skillicons.dev/icons?i=blender" alt="Blender" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=java" alt="Java" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=kotlin" alt="Kotlin" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=spring" alt="Spring" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=androidstudio" alt="Android" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=eclipse" alt="Eclispe" class="skill-icon">
+                <img src="https://skillicons.dev/icons?i=c" alt="C" class="skill-icon">
+            </p>
+
+            <h2>Installation</h2>
+            <pre><code class="language-JavaScript">
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -100,167 +233,49 @@ public class Hash
     }
 }
             </code></pre>
-        </details>
-        <h2 id="GraalVM-vs-JVM">GraalVM vs JVM</h2>
-        <p>
-            We obtained an interesting first result: when executing a hashing algorithm, the JVM performs better than a
-            native image in terms of execution time (ms). However, for a Spring Boot web server (database + static
-            resources and some basic operations), the native image significantly outperforms the JVM, being 3000%
-            faster.<br>And yes, a native image from GraalVM is not equivalent to a native program compiled from C. We're
-            still dealing with Java, a high-level language, and many of the tools we use are far from native
-            programming.<br><br>
-            While native images generated by GraalVM can provide significant performance boosts, especially in terms of
-            startup time and memory footprint, there are scenarios where a traditional .jar running on the JVM may
-            outperform them. Here are a few reasons: </p>
-        <ul>
-            <li>
-                <b>JIT Compilation: </b> The JVM’s Just-In-Time (JIT) compiler can optimize the running application
-                based on
-                its
-                execution profile, potentially leading to faster execution for long-running applications.
-            </li>
-            <li>
-                <b>Dynamic Features: </b> Certain dynamic features and reflection-based operations might be better
-                supported
-                and
-                optimized in the traditional JVM environment.</li>
-            <li>
-                <b>Optimization Over Time:</b> The JVM continues to optimize the code as it runs, which can lead to
-                better
-                performance over time compared to the static optimizations performed during GraalVM’s ahead-of-time
-                (AOT)
-                compilation.</li>
-        </ul>
-        <p>
-            <b>AOT</b> is like preparing a meal ahead of time and freezing it for later use—quick to heat up but not
-            always
-            freshly optimized.<br>
-            <b>JIT</b> is like a personal chef cooking your meal on demand, tailoring it perfectly to your current
-            tastes and
-            preferences, but it takes a bit longer to get your food.
-        </p>
-        <h2 id="Use-case">Use case of GraalVM</h2>
-        <p>
-            Imagine a small web application that we want to be active only when a request is made and goes into sleep
-            mode otherwise. With a Java (JIT) application, it would take some time for it to wake up. However, with a
-            native image, this wake-up operation takes only a few milliseconds. <br>This way, on a free hosting like
-            Render,
-            one of my applications that took nearly a minute to wake up and handle a request now takes only a second.
-            This perfectly aligns with the coherent use cases of GraalVM as summarized in this table:
-        </p>
 
+            <h2>Usage</h2>
+            <p>Instructions on how to use your project.</p>
 
+            <h2>Contributing</h2>
+            <p>Guidelines for contributing to the project.</p>
 
+            <h2>License</h2>
+            <p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+        </div>
 
-        <table>
-            <tr>
-                <th>Feature</th>
-                <th>JVM</th>
-                <th>GraalVM</th>
-            </tr>
-            <tr>
-                <td>Portability</td>
-                <td class="checkmark">&#10004;</td>
-                <td class="crossmark">&#10008;</td>
-            </tr>
-            <tr>
-                <td>Dynamic Compilation (JIT)</td>
-                <td class="checkmark">&#10004;</td>
-                <td class="crossmark">&#10008;</td>
-            </tr>
-            <tr>
-                <td>Static Compilation (AOT)</td>
-                <td class="crossmark">&#10008;</td>
-                <td class="checkmark">&#10004;</td>
-            </tr>
-            <tr>
-                <td>Fast Startup Time application </td>
-                <td class="crossmark">&#10008;</td>
-                <td class="checkmark">&#10004;</td>
-            </tr>
-            <tr>
-                <td>Low Memory Usage application</td>
-                <td class="crossmark">&#10008;</td>
-                <td class="checkmark">&#10004;</td>
-            </tr>
-            <tr>
-                <td>Low CPU Usage application</td>
-                <td class="crossmark">&#10008;</td>
-                <td class="checkmark">&#10004;</td>
-            </tr>
-            <tr>
-                <td>Continuous Optimization by JVM</td>
-                <td class="checkmark">&#10004;</td>
-                <td class="crossmark">&#10008;</td>
-            </tr>
-            <tr>
-                <td>Full integration with Existing Java Tools</td>
-                <td class="checkmark">&#10004;</td>
-                <td class="crossmark">&#10008;</td>
-            </tr>
-            <tr>
-                <td>No Need for Adaptation in Programming</td>
-                <td class="checkmark">&#10004;</td>
-                <td class="crossmark">&#10008;</td>
-            </tr>
-        </table>
-        <h3 id="bad-points">bad points</h3>
-        <p>
-            In summary, GraalVM is best suited for small applications. <b>It’s important to note that you will often
-                encounter compatibility issues as well as serialization difficulties</b>, which may require the
-            implementation
-            of reflection.
-        </p>
-
+        <div class="sidebar tab-content" id="articles">
+            <h3>Pinned articles</h3>
+            <div class="darkMode">
+                <input type="checkbox" class="checkbox" id="checkbox">
+                <label for="checkbox" class="checkbox-label">
+                    <i class="fas fa-moon"></i>
+                    <i class="fas fa-sun"></i>
+                    <span class="ball"></span>
+                </label>
+            </div>
+            <div class="article">
+                <h3><em>Article 1</em></h3>
+                <div class="tag"><span style="background-color: rgb(252, 133, 133);"></span><p>Tech</p></div>
+                <p>Description of article 1.</p>
+            </div>
+            <h3>Pinned projects</h3>
+        </div>
     </div>
 
+
     <script src="codeColor.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="darkModeButton.js"></script>
     <script>
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['haching', 'Sprint boot start'],
-                datasets: [{
-                    label: 'GraalVM',
-                    data: [8356, 121],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }, {
-                    label: 'JVM',
-                    data: [3520, 3668],
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 8500,
-                        title: {
-                            display: true,
-                            text: 'execution time in ms'
-                        }
-                    }
-
-                }
-            }
+        document.querySelectorAll('.tab-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.tab-link').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+            });
         });
-
-
-        fetch('http://localhost:8080/api/views/testPage')
-            .then(response => response.text())
-            .then(data => {
-                // Insérer le contenu récupéré dans le paragraphe
-                document.getElementById('views').innerHTML = data;
-            })
-            .catch(error => console.error('Error fetching content:', error));
     </script>
 </body>
-
 </html>
