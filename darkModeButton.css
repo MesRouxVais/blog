@@ -10,6 +10,7 @@ body {
   position: absolute;
   top: 10px;
   left: 10px;
+  z-index: 999; /* Assure qu'il est au-dessus de tout */
 }
 
 

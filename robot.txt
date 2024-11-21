@@ -1,0 +1,3 @@
+Allow: /
+
+Sitemap: https://mesrouxvais.onrender.com/sitemap.xml

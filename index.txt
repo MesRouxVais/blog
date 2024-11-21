@@ -1,34 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-                                                                <!-- Google tag (gtag.js) -->
-                                                                <script async src="https://www.googletagmanager.com/gtag/js?id=G-9JCMWGTGPD"></script>
-                                                                <script>
-                                                                window.dataLayer = window.dataLayer || [];
-                                                                function gtag(){dataLayer.push(arguments);}
-                                                                gtag('js', new Date());
-
-                                                                gtag('config', 'G-9JCMWGTGPD');
-                                                                </script>
+                                                                   <!-- Google tag (gtag.js) -->
+                                                                   <script async src="https://www.googletagmanager.com/gtag/js?id=G-9JCMWGTGPD"></script>
+                                                                   <script>
+                                                                   window.dataLayer = window.dataLayer || [];
+                                                                   function gtag(){dataLayer.push(arguments);}
+                                                                   gtag('js', new Date());
+   
+                                                                   gtag('config', 'G-9JCMWGTGPD');
+                                                                   </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MesRouxVais</title>
+    <title>mesrouxvais</title>
     <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
     <link rel="shortcut icon" href="favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="mesrouxvais" />
     <link rel="manifest" href="favicon/site.webmanifest" />
-    
     <link id="theme-link" rel="stylesheet" href="lighCode.css">
-    <link id="theme-button" rel="stylesheet" href="darkModeButton.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link rel="stylesheet" href="main.css">
+    <link id="theme-button" rel="stylesheet" href="darkModeButton right.css">
     <style>
+
+        p{
+            line-height: 1.6;
+            text-align: justify;
+            max-width: 50%;
+        }
+        .dark-mode {
+            background: linear-gradient(-45deg, rgb(0, 0, 0), rgb(51, 10, 29), rgb(0, 0, 0));
+            color: white;
+        }
+
+        .dark-mode .content-wrapper {
+            background: #333;
+            color: white;
+        }
+
+        .dark-mode h1,
+        .dark-mode h2,
+        .dark-mode p {
+            color: white;
+        }
+
+        body {
+            font-family: "Montserrat", sans-serif;
+            display: flex;
+            max-width: 100%;
+            margin: 0;
+            background: linear-gradient(-45deg, rgb(0, 0, 0), rgb(51, 10, 29), rgb(0, 0, 0));
+            transition: background 0.3s, color 0.3s;
+            padding: 40px;
+
+            height: 100%;
+            min-height: 100vh;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+        .content-wrapper {
+            display: flex;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            position: relative;
+            transition: background 0.3s, color 0.3s;
+        }
+        .content {
+            width: 75%;
+            padding: 20px;
+            position: relative;
+            transition: background 0.3s, color 0.3s;
+        }
         .sidebar {
             position: relative;
-            width: 30%;
+            width: 25%;
             padding: 20px;
             border-left: 1px solid #ccc;
             background: rgba(255, 255, 255, 0.8);
@@ -38,6 +85,20 @@
         }
         .dark-mode .sidebar{
             background: rgba(20, 20, 20, 0.8);
+        }
+        .skill-icon {
+            margin-right: 10px;
+        }
+        pre {
+            background: #f3f3f3;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background: #f3f3f3;
+            padding: 2px 5px;
+            border-radius: 3px;
         }
         .article {
             margin-bottom: 15px;
@@ -73,17 +134,14 @@
         .tag span{
             content: ' '; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px;
         }
-        .container{
-            display: flex;
-            padding: 0px;
-            max-width: 75%;
-            width: fit-content;
+        .navbar {
+            display: none;
         }
-        .main{
-            position: relative;
-            padding: 20px;
-            width: 75%;
+        .tab-content.active {
+            display: block;
         }
+
+
         .article-link {
             text-decoration: none; /* Supprime le soulignement des liens */
             color: inherit; /* Utilise la couleur par défaut du texte */
@@ -93,18 +151,16 @@
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Effet au survol */
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 5px;
-                width: 100%;
-                max-width: none;
-                margin-top: 0px;
-                margin-bottom: 0px;
-                border-radius: 0px;
-                display: block;
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+                padding: 0px;
             }
-            .main{
-                width: auto;
+            .content{
+                width: 100%;
+            }
+            .content-wrapper{
+                display: block;
             }
             .sidebar {
                 /*display: none;*/
@@ -113,31 +169,26 @@
                 border-radius: 15px;
                 background-color: #f1f1f1;
             }
+            .content-wrapper{
+                border-radius: 0px;
+            }
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <div class="main">
-            <div class="view-counter">
-                <span id="viewCount">
-                    <span id="autor">mesrouxvais |</span>
-                    <span id="date">21/11/2025</span>
-                    <!--<span id="views">256 </span><i class="fas fa-eye"></i>-->
-                </span>
-            </div>
-            <div class="darkMode">
-                <input type="checkbox" class="checkbox" id="checkbox">
-                <label for="checkbox" class="checkbox-label">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-sun"></i>
-                    <span class="ball"></span>
-                </label>
-            </div>
+    <div class="content-wrapper">
+        <div class="darkMode">
+            <input type="checkbox" class="checkbox" id="checkbox">
+            <label for="checkbox" class="checkbox-label">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+                <span class="ball"></span>
+            </label>
+        </div>
+        <div class="content tab-content active" id="presentation">
             <h1>MesRouxVais</h1>
-            <p style="text-align: center;">How do git keep track of its versions ?</p>
-            <p style="text-align: center;">
+            <p>How do git keep track of its versions ?</p>
+            <p>
                 <img src="https://skillicons.dev/icons?i=blender" alt="Blender" class="skill-icon">
                 <img src="https://skillicons.dev/icons?i=java" alt="Java" class="skill-icon">
                 <img src="https://skillicons.dev/icons?i=kotlin" alt="Kotlin" class="skill-icon">
@@ -158,16 +209,16 @@
                 
                 On this page, you’ll find some of my projects and articles (along with logs of my recent explorations). They will surely give you more insight into who I am!
             </p>
-            
         </div>
+
         <div class="sidebar tab-content" id="articles">
             <h2><i class="fas fa-book"></i> Pinned articles</h2>
-            <a href="graalvmbenchmark.html" class="article-link">
+            <a href="article1.html" class="article-link">
                 <div class="article">
-                    <h3><em>What is GraalVM worth?</em></h3>
-                    <div class="tag"><span style="background-color: rgb(252, 171, 133);"></span><p>Java</p></div>
-                    <div class="tag"><span style="background-color: rgb(133, 252, 169);"></span><p>GraalVM</p></div>
-                    <p>Simple test of using this tech</p>
+                    <h3><em>Article 1</em></h3>
+                    <div class="tag"><span style="background-color: rgb(252, 133, 133);"></span><p>Tech</p></div>
+                    <div class="tag"><span style="background-color: rgb(133, 151, 252);"></span><p>BLE</p></div>
+                    <p>Description of article 1.</p>
                 </div>
             </a>
         
@@ -179,66 +230,21 @@
                 </div>
             </a>
             <h2><i class="fas fa-mug-hot"></i> Pinned projects</h2>
-            <a href="https://github.com/MesRouxVais/wifiMapper" class="article-link">
-                <div class="article">
-                    <h3><em>WifiMapper</em></h3>
-                    <div class="tag"><span style="background-color: rgb(189, 99, 192);"></span><p>Kotlin - Java - C</p></div>
-                    <div class="tag"><span style="background-color: rgb(133, 151, 252);"></span><p>BLE</p></div>
-                    <div class="tag"><span style="background-color: rgb(133, 252, 179);"></span><p>ESP</p></div>
-                    <p>training subject : creation of a map of wifi access points and their characteristics.</p>
-                </div>
-            </a>
+            <div class="article">
+                <h3><em>Article 1</em></h3>
+                <div class="tag"><span style="background-color: rgb(252, 133, 133);"></span><p>Tech</p></div>
+                <p>Description of article 1.</p>
+            </div>
+            <div class="article">
+                <h3><em>Article 1</em></h3>
+                <div class="tag"><span style="background-color: rgb(252, 133, 133);"></span><p>Tech</p></div>
+                <p>Description of article 1.</p>
+            </div>
         </div>
-
     </div>
 
+
     <script src="codeColor.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="darkModeButton.js"></script>
-    <script>
-        var ctx = document.getElementById('myChart').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['haching', 'Sprint boot start'],
-                datasets: [{
-                    label: 'GraalVM',
-                    data: [8356, 121],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }, {
-                    label: 'JVM',
-                    data: [3520, 3668],
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 8500,
-                        title: {
-                            display: true,
-                            text: 'execution time in ms'
-                        }
-                    }
-
-                }
-            }
-        });
-
-
-        fetch('http://localhost:8080/api/views/testPage')
-            .then(response => response.text())
-            .then(data => {
-                // Insérer le contenu récupéré dans le paragraphe
-                document.getElementById('views').innerHTML = data;
-            })
-            .catch(error => console.error('Error fetching content:', error));
-    </script>
 </body>
-
 </html>
