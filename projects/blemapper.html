@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+                                                                <!-- Google tag (gtag.js) -->
+                                                                <script async src="https://www.googletagmanager.com/gtag/js?id=G-9JCMWGTGPD"></script>
+                                                                <script>
+                                                                window.dataLayer = window.dataLayer || [];
+                                                                function gtag(){dataLayer.push(arguments);}
+                                                                gtag('js', new Date());
+
+                                                                gtag('config', 'G-9JCMWGTGPD');
+                                                                </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <meta name="description" content="Training subject : creation of a map of wifi access points and their characteristics">
+    <meta name="keywords" content="BLE,ESP-IDF,ESP32">
+    <meta name="author" content="MesRouxVais">
+
+
+
+
+    <title>BLE - ESP32 scanner</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    
+    <link id="theme-link" rel="stylesheet" href="/lighCode.css">
+    <link id="theme-button" rel="stylesheet" href="/darkModeButton.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="view-counter">
+            <span id="viewCount">
+                <span id="autor">mesrouxvais |</span>
+                <span id="date">2024/11/28</span>
+                <!--<span id="views">256 </span><i class="fas fa-eye"></i>-->
+            </span>
+        </div>
+        <div class="darkMode">
+            <input type="checkbox" class="checkbox" id="checkbox">
+            <label for="checkbox" class="checkbox-label">
+                <i class="fas fa-moon"></i>
+                <i class="fas fa-sun"></i>
+                <span class="ball"></span>
+            </label>
+        </div>
+        <h1>Wifi scanner</h1>
+        <div class="toc-container">
+            <div class="toc-title">Summary</div>
+            <ul class="toc-list">
+                <li><a href="#Introduction-and-results">Introduction and results</a></li>
+                <li><a href="#Devices-used" style="font-size: 0.85em; margin-left: 30px;">Devices used</a></li>
+                <li><a href="#Results" style="font-size: 0.85em; margin-left: 30px;">Results</a></li>
+                <li><a href="#Android-dev">Android/Kotlin development</a></li>
+                <li><a href="#SQLite-db" style="font-size: 0.85em; margin-left: 30px;">SQLite db</a></li>
+                <li><a href="#C-dev">ESP32/C development</a></li>
+                <li><a href="#C-dev" style="font-size: 0.85em; margin-left: 30px;">scan.c</a></li>
+                <li><a href="#C-dev" style="font-size: 0.85em; margin-left: 30px;">wifibuffer.c</a></li>
+                
+            </ul>
+        </div>
+        <ul>
+            <li>
+                <b>Subjects Studied: </b>C, ESP-IDF and its integration with Eclipse, BLE, Kotlin for Android applications.
+            </li>
+            <li>
+                <b>Technologies Already Familiarized: </b>Spring Boot, JS and all necessary frontend, SQLite.
+            </li>
+        </ul>
+        <h2 id="Introduction-and-results">Introduction and results</h2>
+        <p>To master C and enjoy playing with my ESP32 boards, I started a project (10 hours reserved) to create a WiFi scanner to collect and analyze data such as network density at a given point, WiFi channel distribution, and access provider distribution.</p>
+        <h3 id="Devices-used">Devices used</h3>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Function</th>
+                <th>Links</th>
+            </tr>
+            <tr>
+                <td>ESP32</td>
+                <td>Collects Wi-Fi access point information and sends it through BLE to the Android application.</td>
+                <td>AP: WiFi, Android-APP: BLE</td>
+            </tr>
+            <tr>
+                <td>Android Application</td>
+                <td>Stores data from the ESP32 in an SQLite database and sends it to a remote server at the end of a scan session.</td>
+                <td>ESP: BLE, Remote Server: HTTP</td>
+            </tr>
+            <tr>
+                <td>Remote Server</td>
+                <td>Processes the data and displays it on a map.</td>
+                <td>Android-APP: HTTP</td>
+            </tr>
+        </table>
+        <h3 id="Results">Results</h3>
+        <p>This document serves as a report on the various points encountered, but first, let's focus on the results obtained. <br>I scanned a total of 1235 connection points :</p>
+        <ul>
+            <li>
+                42% are Orange internet boxes.
+            </li>
+            <li>
+                18% are SFR internet boxes.
+            </li>
+            <li>
+                15% are Bouygues internet boxes.
+            </li>
+            <li>
+                14 are iPhones under the shared name “iPhone de xxxxx” and 2 HP printers.
+            </li>
+        </ul>
+        <p>We can get some maps concerning the network density (generated by a Spring Boot server using OpenStreetMap and the Leaflet.jslibrary). <br> One might be tempted to create a “heat map”, but the density points (80 in total with an average of 15 devices per point) will overlap like this:</p>
+        <img src="/projects/images/ble-heatmap.png" style="max-width: 100%">
+        <p>(See a scaled version for the city on Toulouse in the 3rd photo.)</p>
+        <p>Therefore, we will use circles whose diameters vary according to the number of devices. According to the following lines:</p>
+        <pre style="padding-top: 0em; padding-bottom: 0em;"><code class="language-js">
+var intensity = point.count / 30;
+var radius = Math.max(5, intensity * 100);            
+        </code></pre>
+        <img src="/projects/images/ble-nobg.png" style="max-width: 100%">
+        <img src="/projects/images/ble-comparaison.png" style="max-width: 100%">
+        <p>The circle position remains relative to the associated scan position, so the distance between two circles is that between their respective density points.<br>To associate these results with reality, it should be noted that the densest locations correspond to narrow streets lined with terraced houses (having performed my scans while cycling).</p>
+
+
+
+
+
+
+        <h2 id="Android-dev">Android/Kotlin development</h2>
+        <p>The code for the Android application is disposable and not flexible. This is my second time using Kotlin, but given its similarities with Java (astonishing...), I think I can handle it reasonably well.
+
+            Most of the errors are acceptable, ensuring fast development. Consequently, my application doesn't work for Android versions prior to 13.
+            
+            However, despite assuming an unplanned and somewhat chaotic project architecture, one mistake I regret is using two different classes for each of my SQLite tables (scanned devices and density points). Since they work on the same database, it can cause conflicts, especially when updating their structure. <br><br>Additionally, the "handler" meant to serve as an interface between these two classes and the rest of the code only contains an initialized version of the associated objects and doesn't truly serve as an "API". But that's entirely normal without architectural planning and just a handful of development hours.</p>
+        <h3 id="SQLite-db">SQLite db</h3>
+        <details><summary>see table declaration</summary><pre><code class="language-Java">
+val CREATE_TABLE = ("CREATE TABLE " + TABLE_NAME + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_SSID + " TEXT,"
+                + COLUMN_RSSI + " INTEGER,"
+                + COLUMN_AUTHMODE + " INTEGER,"
+                + COLUMN_PAIRWISE_CIPHER + " INTEGER,"
+                + COLUMN_GROUP_CIPHER + " INTEGER,"
+                + COLUMN_PRIMARY + " INTEGER,"
+
+                + COLUMN_LATITUDE + " DOUBLE,"
+                + COLUMN_LONGITUDE + " DOUBLE" + ")")
+        db.execSQL(CREATE_TABLE)
+
+val CREATE_TABLE = ("CREATE TABLE " + TABLE_NAME + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY,"
+                + COLUMN_COUNT + " INTEGER,"
+
+
+                + COLUMN_LATITUDE + " DOUBLE,"
+                + COLUMN_LONGITUDE + " DOUBLE" + ")")
+        db.execSQL(CREATE_TABLE)
+        </code></pre></details>
+
+
+
+        <h2 id="C-dev">ESP32/C development</h2>
+        <p>How to describe those hours debugging "fullstack overflow" errors and memory leaks ?(I miss the garbage collector)<br><br>
+
+            Switching from Java to C is a complete paradigm shift, but working with embedded systems whit C brings an interesting closeness to the physical material reality.<br><br>On the hardware and IDE side, configuring ESP-IDF and Eclipse wasn't a difficult task. The discovery of BLE was a bit more challenging, with GATT server... GAP...
+            
+            We will use NimBLE from the Apache Mynewt project here. <a href="https://mynewt.apache.org/latest/index.html"><b>Lean more about Mynewt</b></a></p>
+
+
+            The program is divided into two parts:
+            <ul>
+                <li>
+                    <b>wifibuffer.c</b> handles the information generated, from their storage in memory to their formatting for sending.
+                </li>
+                <li>
+                    <b>scan.c</b> manages WiFi and BLE.
+                </li>
+            </ul>
+            <details><summary>see wifibuffer.c</summary><pre><code class="language-js">
+#include "wifi_buffer.h"
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdio.h&gt;
+
+wifi_buffer_t* g_wifi_buffer = NULL;
+
+bool wifi_buffer_init(size_t initial_capacity) {
+    if (g_wifi_buffer != NULL) {
+        return false;
+    }
+    
+    g_wifi_buffer = malloc(sizeof(wifi_buffer_t));
+    if (!g_wifi_buffer) return false;
+    
+    g_wifi_buffer->entries = malloc(initial_capacity * sizeof(wifi_entry_t));
+    if (!g_wifi_buffer->entries) {
+        free(g_wifi_buffer);
+        g_wifi_buffer = NULL;
+        return false;
+    }
+    
+    g_wifi_buffer->count = 0;
+    g_wifi_buffer->capacity = initial_capacity;
+    return true;
+}
+
+void wifi_buffer_reset(void){
+    g_wifi_buffer->count = 0;
+}
+
+
+bool wifi_buffer_add_ap_info(const wifi_ap_record_t* ap_info) {
+    if (!g_wifi_buffer || !ap_info) return false;
+
+    // Vérifier si nous devons augmenter la capacité
+    if (g_wifi_buffer->count >= g_wifi_buffer->capacity) {
+        size_t new_capacity = g_wifi_buffer->capacity * 2;
+        wifi_entry_t* new_entries = realloc(g_wifi_buffer->entries, 
+                                            new_capacity * sizeof(wifi_entry_t));
+        if (!new_entries) return false;
+        
+        g_wifi_buffer->entries = new_entries;
+        g_wifi_buffer->capacity = new_capacity;
+    }
+    
+    // Copier les données
+    wifi_entry_t* entry = &g_wifi_buffer->entries[g_wifi_buffer->count];
+    strncpy(entry->ssid, (char*)ap_info->ssid, MAX_SSID_LENGTH - 1);
+    entry->ssid[MAX_SSID_LENGTH - 1] = '\0';
+    entry->rssi = ap_info->rssi;
+    entry->authmode = ap_info->authmode;
+    entry->pairwise_cipher = ap_info->pairwise_cipher;
+    entry->group_cipher = ap_info->group_cipher;
+    entry->primary = ap_info->primary;
+    
+    g_wifi_buffer->count++;
+    return true;
+}
+
+char* wifi_buffer_get_formatted_data(void) {
+    if (!g_wifi_buffer) return NULL;
+
+    size_t buffer_size = g_wifi_buffer->count * LINE_BUFFER_SIZE;
+    char* output = malloc(buffer_size);
+    if (!output) return NULL;
+    
+    // Initialisation de la chaîne de sortie avec le nombre de points Wi-Fi en première ligne
+    snprintf(output, buffer_size, "%zu\n", g_wifi_buffer->count);
+    size_t total_length = strlen(output);  // On commence avec la longueur de la première ligne
+    
+    // Ajouter les détails des points Wi-Fi
+    for (size_t i = 0; i < g_wifi_buffer->count; i++) {
+        wifi_entry_t* entry = &g_wifi_buffer->entries[i];
+        char line[LINE_BUFFER_SIZE];
+        
+        snprintf(line, LINE_BUFFER_SIZE, 
+                "%s,%d,%d,%d,%d,%d\n",
+                entry->ssid, 
+                entry->rssi,
+                entry->authmode, 
+                entry->pairwise_cipher,
+                entry->group_cipher,
+                entry->primary);
+                
+        if (total_length + strlen(line) >= buffer_size) {
+            buffer_size *= 2;
+            char* new_output = realloc(output, buffer_size);
+            if (!new_output) {
+                free(output);
+                return NULL;
+            }
+            output = new_output;
+        }
+        
+        strcat(output, line);
+        total_length += strlen(line);
+    }
+    
+    return output;
+}
+
+
+void wifi_buffer_free(void) {
+    if (g_wifi_buffer) {
+        free(g_wifi_buffer->entries);
+        free(g_wifi_buffer);
+        g_wifi_buffer = NULL;
+    }
+}
+            </code></pre></details>
+            <details><summary>see scan.c</summary><pre><code class="language-js">
+#include &lt;string.h&gt;
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+#include "esp_wifi.h"
+#include "esp_log.h"
+#include "esp_event.h"
+#include "nvs_flash.h"
+#include "wifi_buffer.h"
+
+#include &lt;stdio.h&gt;
+#include "freertos/task.h"
+#include "esp_nimble_hci.h"
+#include "nimble/nimble_port.h"
+#include "nimble/nimble_port_freertos.h"
+#include "host/ble_hs.h"
+#include "services/gap/ble_svc_gap.h"
+#include "services/gatt/ble_svc_gatt.h"
+#include "sdkconfig.h"
+
+
+
+#define DEFAULT_SCAN_LIST_SIZE 24
+static const char *TAG = "wifi_scan";
+
+static uint8_t ble_addr_type;
+static char received_data[15] = "scan data ready";
+static uint16_t notification_handle = 0;
+static uint16_t conn_handle = BLE_HS_CONN_HANDLE_NONE;
+static bool notifications_enabled = true;
+void ble_app_advertise(void);
+void wifi_scan(void);
+
+static int send_notification(const char *data) {
+    struct os_mbuf *om;
+    int rc;
+
+    if (conn_handle == BLE_HS_CONN_HANDLE_NONE || !notifications_enabled) {
+        ESP_LOGI(TAG, "Cannot send notification: no connection or notifications disabled");
+        return BLE_HS_ENOTCONN;
+    }
+
+    om = ble_hs_mbuf_from_flat(data, strlen(data));
+    if (om == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate memory for notification");
+        return BLE_HS_ENOMEM;
+    }
+
+    rc = ble_gattc_notify_custom(conn_handle, notification_handle, om);
+    if (rc != 0) {
+        ESP_LOGE(TAG, "Failed to send notification, rc=%d", rc);
+        os_mbuf_free_chain(om);
+        return rc;
+    }
+
+    ESP_LOGI(TAG, "Notification sent successfully: %s", data);
+    return 0;
+}
+
+static int device_write(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
+{
+    
+    ESP_LOGI(TAG, "Data received from client");
+    wifi_scan();
+    if (notifications_enabled) {
+        send_notification(received_data);
+    }
+    
+    return 0;
+}
+
+static int device_read(uint16_t con_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg)
+{
+    char* formatted_data = wifi_buffer_get_formatted_data();
+    os_mbuf_append(ctxt->om, formatted_data, strlen(formatted_data));
+    return 0;
+}
+
+static const struct ble_gatt_svc_def gatt_svcs[] = {
+    {
+        .type = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid = BLE_UUID16_DECLARE(0x180),
+        .characteristics = (struct ble_gatt_chr_def[]){
+            {
+                .uuid = BLE_UUID16_DECLARE(0xFEF4),
+                .flags = BLE_GATT_CHR_F_READ,
+                .access_cb = device_read,
+                .val_handle = &notification_handle
+            },
+            {
+                .uuid = BLE_UUID16_DECLARE(0xDEAD),
+                .flags = BLE_GATT_CHR_F_WRITE,
+                .access_cb = device_write
+            },
+            {
+                0
+            }
+        }
+    },
+    {
+        0
+    }
+};
+
+static int ble_gap_event(struct ble_gap_event *event, void *arg)
+{
+    switch (event->type)
+    {
+        case BLE_GAP_EVENT_CONNECT:
+            ESP_LOGI(TAG, "BLE GAP EVENT CONNECT %s", event->connect.status == 0 ? "OK!" : "FAILED!");
+            if (event->connect.status == 0) {
+                conn_handle = event->connect.conn_handle;
+            } else {
+                conn_handle = BLE_HS_CONN_HANDLE_NONE;
+                ble_app_advertise();
+            }
+            break;
+
+        case BLE_GAP_EVENT_DISCONNECT:
+            ESP_LOGI(TAG, "BLE GAP EVENT DISCONNECT");
+            conn_handle = BLE_HS_CONN_HANDLE_NONE;
+            //notifications_enabled = false; simplify 
+            ble_app_advertise();
+            break;
+
+        case BLE_GAP_EVENT_SUBSCRIBE:
+            notifications_enabled = event->subscribe.cur_notify;
+            ESP_LOGI(TAG, "Notifications %s", notifications_enabled ? "enabled" : "disabled");
+            break;
+
+        case BLE_GAP_EVENT_MTU:
+            ESP_LOGI(TAG, "MTU Update Event, MTU: %d", event->mtu.value);
+            break;
+
+        default:
+            break;
+    }
+    return 0;
+}
+
+void ble_app_advertise(void)
+{
+    struct ble_hs_adv_fields fields;
+    const char *device_name;
+    memset(&fields, 0, sizeof(fields));
+    device_name = ble_svc_gap_device_name();
+    fields.name = (uint8_t *)device_name;
+    fields.name_len = strlen(device_name);
+    fields.name_is_complete = 1;
+    ble_gap_adv_set_fields(&fields);
+
+    struct ble_gap_adv_params adv_params;
+    memset(&adv_params, 0, sizeof(adv_params));
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+    ble_gap_adv_start(ble_addr_type, NULL, BLE_HS_FOREVER, &adv_params, ble_gap_event, NULL);
+}
+
+void ble_app_on_sync(void)
+{
+    ble_hs_id_infer_auto(0, &ble_addr_type);
+    ble_app_advertise();
+}
+
+void host_task(void *param)
+{
+    nimble_port_run();
+}
+
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+
+
+static void print_auth_modes(void) {
+    ESP_LOGI(TAG, "Authentication Modes:");
+    ESP_LOGI(TAG, "WIFI_AUTH_OPEN \t%d", WIFI_AUTH_OPEN);
+    ESP_LOGI(TAG, "WIFI_AUTH_OWE \t%d", WIFI_AUTH_OWE);
+    ESP_LOGI(TAG, "WIFI_AUTH_WEP \t%d", WIFI_AUTH_WEP);
+    ESP_LOGI(TAG, "WIFI_AUTH_WPA_PSK \t%d", WIFI_AUTH_WPA_PSK);
+    ESP_LOGI(TAG, "WIFI_AUTH_WPA2_PSK \t%d", WIFI_AUTH_WPA2_PSK);
+    ESP_LOGI(TAG, "WIFI_AUTH_WPA_WPA2_PSK \t%d", WIFI_AUTH_WPA_WPA2_PSK);
+    ESP_LOGI(TAG, "WIFI_AUTH_WPA3_PSK \t%d", WIFI_AUTH_WPA3_PSK);
+    ESP_LOGI(TAG, "WIFI_AUTH_WPA2_WPA3_PSK \t%d", WIFI_AUTH_WPA2_WPA3_PSK);
+}
+
+static void print_cipher_types(void) {
+    ESP_LOGI(TAG, "Cipher Types:");
+    ESP_LOGI(TAG, "WIFI_CIPHER_TYPE_NONE \t%d", WIFI_CIPHER_TYPE_NONE);
+    ESP_LOGI(TAG, "WIFI_CIPHER_TYPE_WEP40 \t%d", WIFI_CIPHER_TYPE_WEP40);
+    ESP_LOGI(TAG, "WIFI_CIPHER_TYPE_WEP104 \t%d", WIFI_CIPHER_TYPE_WEP104);
+    ESP_LOGI(TAG, "WIFI_CIPHER_TYPE_TKIP \t%d", WIFI_CIPHER_TYPE_TKIP);
+    ESP_LOGI(TAG, "WIFI_CIPHER_TYPE_CCMP \t%d", WIFI_CIPHER_TYPE_CCMP);
+    ESP_LOGI(TAG, "WIFI_CIPHER_TYPE_TKIP_CCMP \t%d", WIFI_CIPHER_TYPE_TKIP_CCMP);
+    ESP_LOGI(TAG, "WIFI_CIPHER_TYPE_AES_CMAC128 \t%d", WIFI_CIPHER_TYPE_AES_CMAC128);
+}
+
+static void save_scan_results(wifi_ap_record_t *ap_info, uint16_t ap_count) {
+    wifi_buffer_reset();
+    for (int i = 0; i < ap_count; i++) {
+        if (!wifi_buffer_add_ap_info(&ap_info[i])) {
+            ESP_LOGE(TAG, "Failed to add AP info to buffer");
+        }
+    }
+
+    char* formatted_data = wifi_buffer_get_formatted_data();
+    if (formatted_data) {
+        printf("%s", formatted_data);
+        free(formatted_data);
+    }
+
+    ESP_LOGI(TAG, "Scan results processed");
+}
+
+static bool wifi_initialized = false;
+
+static esp_err_t initialize_wifi(void) {
+    if (wifi_initialized) {
+        return ESP_OK;
+    }
+
+    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
+    if (sta_netif == NULL) {
+        ESP_LOGE(TAG, "Failed to create station interface");
+        return ESP_FAIL;
+    }
+
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    esp_err_t err = esp_wifi_init(&cfg);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to init wifi: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = esp_wifi_set_mode(WIFI_MODE_STA);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set wifi mode: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = esp_wifi_start();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to start wifi: %s", esp_err_to_name(err));
+        return err;
+    }
+
+    wifi_initialized = true;
+    return ESP_OK;
+}
+
+
+void wifi_scan(void) {
+    // Initialize WiFi if not already initialized
+    esp_err_t err = initialize_wifi();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize WiFi");
+        return;
+    }
+
+    err = esp_wifi_scan_stop();
+    if (err != ESP_OK && err != ESP_ERR_WIFI_NOT_STARTED) {
+        ESP_LOGW(TAG, "Failed to stop previous scan: %s", esp_err_to_name(err));
+    }
+
+    wifi_scan_config_t scan_config = {
+        .ssid = NULL,
+        .bssid = NULL,
+        .channel = 0,     // 0 = scan all channels
+        .show_hidden = true,
+        .scan_type = WIFI_SCAN_TYPE_ACTIVE,
+        .scan_time.active.min = 200,
+        .scan_time.active.max = 300
+    };
+
+    wifi_ap_record_t *ap_info = calloc(DEFAULT_SCAN_LIST_SIZE, sizeof(wifi_ap_record_t));
+    if (ap_info == NULL) {
+        ESP_LOGE(TAG, "Failed to allocate memory for AP records");
+        return;
+    }
+
+    err = esp_wifi_scan_start(&scan_config, true);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to start scan: %s", esp_err_to_name(err));
+        free(ap_info);
+        return;
+    }
+
+    uint16_t ap_count = 0;
+    err = esp_wifi_scan_get_ap_num(&ap_count);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get AP count: %s", esp_err_to_name(err));
+        free(ap_info);
+        return;
+    }
+    
+    uint16_t number = DEFAULT_SCAN_LIST_SIZE;
+    err = esp_wifi_scan_get_ap_records(&number, ap_info);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get AP records: %s", esp_err_to_name(err));
+        free(ap_info);
+        return;
+    }
+    
+    ESP_LOGI(TAG, "Found %u access points", ap_count);
+
+    save_scan_results(ap_info, ap_count);
+
+    // Cleanup
+    free(ap_info);
+
+}
+
+void wifi_cleanup(void) {
+    if (!wifi_initialized) {
+        return;
+    }
+
+    esp_wifi_scan_stop();
+    esp_wifi_stop();
+    esp_wifi_deinit();
+    wifi_initialized = false;
+}
+
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+//_______________________________________________________________________________________
+
+
+void app_main(void) {
+    // Initialize NVS first
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK(ret);
+
+    // Initialize TCP/IP and event loop first
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+    // Initialize WiFi buffer
+    if (!wifi_buffer_init(DEFAULT_SCAN_LIST_SIZE)) {
+        ESP_LOGE(TAG, "Failed to initialize WiFi buffer");
+        return;
+    }
+
+    // Initialize BLE
+    nimble_port_init();
+    ble_svc_gap_device_name_set("BLE-Server");
+    ble_svc_gap_init();
+    ble_svc_gatt_init();
+    ble_gatts_count_cfg(gatt_svcs);
+    ble_gatts_add_svcs(gatt_svcs);
+    ble_hs_cfg.sync_cb = ble_app_on_sync;
+    nimble_port_freertos_init(host_task);
+
+    // Print information
+    print_auth_modes();
+    print_cipher_types();
+}
+        </code></pre></details>
+        <h2 id="spring-dev">Remote server development</h2>
+        <p>Just a server using Spring Boot with <a href="/graalvm-performance.html"><b>GraalVM</b></a>, some JS, OpenStreetMap, and Leaflet.</p>
+    </div>
+
+    <script src="/codeColor.js"></script>
+    <script src="/darkModeButton.js"></script>
+</body>
+
+</html>

@@ -17,6 +17,7 @@ body {
     background-repeat: no-repeat;
 }
 
+
 .container {
     position: relative;
     background: white;
@@ -62,9 +63,11 @@ p {
 
 .dark-mode h1,
 .dark-mode h2,
+.dark-mode h3,
 .dark-mode p {
     color: white;
 }
+
 
 summary {
     list-style-type: none;
@@ -172,7 +175,12 @@ th {
     font-weight: bold;
 }
 
-
+.dark-mode table{
+    background-color: #1d1d1d;
+}
+.dark-mode th{
+    background-color: #131313;
+}
 
 @media (max-width: 600px) {
     .container {
